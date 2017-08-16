@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
+  <metadata>
+    <id>QiwiApi</id>
+    <version>1.0</version>
+    <title>Qiwi Wallet API</title>
+    <authors>Anna Prosvetova</authors>
+    <owners>Anna Prosvetova</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <licenseUrl>https://raw.githubusercontent.com/aprosvetova/QiwiApi/master/LICENSE.txt</licenseUrl>
+    <projectUrl>https://github.com/aprosvetova/QiwiApi</projectUrl>
+    <iconUrl>http://i.imgur.com/hsjwL8o.png</iconUrl>
+    <description>Qiwi Wallet API Library, supports transactions history, money transfers, etc</description>
+    <releaseNotes>Yay!</releaseNotes>
+    <copyright>Copyright © Anna Prosvetova 2017</copyright>
+    <tags>Qiwi Payments Wallet API</tags>
+    <repository type="git" url="https://github.com/aprosvetova/QiwiApi.git" />
+    <dependencies>
+      <group targetFramework=".NETStandard1.1">
+        <dependency id="NETStandard.Library" version="1.6.1" exclude="Build,Analyzers" />
+        <dependency id="Newtonsoft.Json" version="10.0.3" exclude="Build,Analyzers" />
+      </group>
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="QiwiApi/bin/Release/QiwiApi.dll" target="lib/netstandard1.1" />
+  </files>
+</package>
