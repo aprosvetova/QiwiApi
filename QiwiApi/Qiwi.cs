@@ -11,6 +11,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
 using QiwiApi.Events;
+using QiwiApi.Misc;
 using QiwiApi.Models;
 using QiwiApi.Models.Enums;
 using QiwiApi.Requests;
@@ -21,28 +22,15 @@ namespace QiwiApi {
 		private string _phone;
 		private string _token;
 		private readonly WebClient _webClient;
-		private long? _nextTxId = null;
-		private DateTime? _nextTxDate = null;
-		private List<long> _handledTransactions = new List<long>();
-		private long? _lastHandledTransaction;
+		private FixedSizedQueue<long> _handledTransactions = new FixedSizedQueue<long>(50);
 		private CancellationTokenSource _receivingCancellationTokenSource;
 
-		public Qiwi(string phone, string token, long? nextTxId = null, DateTime? nextTxDate = null) {
+		public Qiwi(string phone, string token, long? nextTxId = null) {
 			_phone = phone;
 			_token = token;
-			_nextTxId = nextTxId;
-			_nextTxDate = nextTxDate;
 			_webClient = new WebClient {
 				Encoding = Encoding.UTF8
 			};
-		}
-
-		private void SetNextTransaction(long? nextTxId, DateTime? nextTxDate) {
-			if (_nextTxId != nextTxId || _nextTxDate != nextTxDate) {
-				OnNextTransactionUpdate?.Invoke(this, new NextTransactionUpdateEventArgs(nextTxId, nextTxDate));
-			}
-			_nextTxId = nextTxId;
-			_nextTxDate = nextTxDate;
 		}
 
 		public void SetPhone(string phone) {
@@ -65,18 +53,11 @@ namespace QiwiApi {
 		private async void PollHistoryAsync(TimeSpan period, CancellationToken cancellationToken = default(CancellationToken)) {
 			while (!cancellationToken.IsCancellationRequested) {
 				try {
-					var history = await GetHistoryAsync(_nextTxId, _nextTxDate, cancellationToken).ConfigureAwait(false);
-					if (history.Payments.Any()) {
-						if (!history.Payments.Any(x => x.Id == _lastHandledTransaction)) {
-							_handledTransactions.Clear();
-						}
-						_lastHandledTransaction = history.Payments[0].Id;
-					}
-					SetNextTransaction(history.NextTransactionId, history.NextTransactionDate);
+					var history = await GetHistoryAsync(null, null, cancellationToken).ConfigureAwait(false);
 					foreach (var payment in history.Payments) {
-						if (!_handledTransactions.Contains(payment.Id)) {
+						if (!_handledTransactions.Queue.Contains(payment.Id)) {
 							OnNewPayment(payment);
-							_handledTransactions.Add(payment.Id);
+							_handledTransactions.Enqueue(payment.Id);
 						}
 					}
 				} catch (Exception generalException) {
@@ -187,7 +168,5 @@ namespace QiwiApi {
 		public event EventHandler<PaymentEventArgs> OnIncomingPayment;
 
 		public event EventHandler<PaymentEventArgs> OnOutgoingPayment;
-
-		public event EventHandler<NextTransactionUpdateEventArgs> OnNextTransactionUpdate;
 	}
 }
