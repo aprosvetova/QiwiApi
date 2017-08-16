@@ -79,10 +79,10 @@ namespace QiwiApi {
 							_handledTransactions.Add(payment.Id);
 						}
 					}
-					Thread.Sleep(period);
 				} catch (Exception generalException) {
 					// handle later
 				}
+				Thread.Sleep(period);
 			}
 		}
 
