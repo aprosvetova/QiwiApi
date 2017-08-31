@@ -25,12 +25,16 @@ namespace QiwiApi {
 		private FixedSizedQueue<long> _handledTransactions = new FixedSizedQueue<long>(50);
 		private CancellationTokenSource _receivingCancellationTokenSource;
 
-		public Qiwi(string phone, string token, long? nextTxId = null) {
+		public Qiwi(string phone, string token) {
 			_phone = phone;
 			_token = token;
 			_webClient = new WebClient {
 				Encoding = Encoding.UTF8
 			};
+		}
+
+		public string GetPhone() {
+			return _phone;
 		}
 
 		public void SetPhone(string phone) {
@@ -127,7 +131,11 @@ namespace QiwiApi {
 			var parameters = new Dictionary<string, string>();
 			if (nextTxId != null && nextTxDate != null) {
 				parameters["nextTxnId"] = nextTxId.ToString();
+<<<<<<< HEAD
 				parameters["nextTxDate"] = nextTxDate.Value.ToString("yyyy-MM-ddTHH:mm:sszzz");
+=======
+				parameters["nextTxnDate"] = nextTxDate.Value.ToString("yyyy-MM-ddTHH:mm:sszzz");
+>>>>>>> master
 			}
 			parameters["rows"] = "50";
 			var url = BuildUrl($"payment-history/v1/persons/{_phone}/payments", parameters);
