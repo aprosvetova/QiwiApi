@@ -131,11 +131,7 @@ namespace QiwiApi {
 			var parameters = new Dictionary<string, string>();
 			if (nextTxId != null && nextTxDate != null) {
 				parameters["nextTxnId"] = nextTxId.ToString();
-<<<<<<< HEAD
-				parameters["nextTxDate"] = nextTxDate.Value.ToString("yyyy-MM-ddTHH:mm:sszzz");
-=======
 				parameters["nextTxnDate"] = nextTxDate.Value.ToString("yyyy-MM-ddTHH:mm:sszzz");
->>>>>>> master
 			}
 			parameters["rows"] = "50";
 			var url = BuildUrl($"payment-history/v1/persons/{_phone}/payments", parameters);
