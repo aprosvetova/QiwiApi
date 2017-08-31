@@ -33,6 +33,10 @@ namespace QiwiApi {
 			};
 		}
 
+		public string GetPhone() {
+			return _phone;
+		}
+
 		public void SetPhone(string phone) {
 			_phone = phone;
 		}
